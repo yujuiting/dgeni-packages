@@ -61,6 +61,8 @@ module.exports = function codeNameProcessor(log) {
         return findCodeName(node.key);
       case 'ArrowFunctionExpression':
         return null;
+      case 'NewExpression':
+        return null;
       default:
         log.warn('HELP! Unrecognised node type: ' + node.type);
         log.warn(node);
