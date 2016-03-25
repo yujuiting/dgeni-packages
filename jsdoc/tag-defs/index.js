@@ -22,5 +22,6 @@ module.exports = [
   require('./kind'),
   require('./function'),
   require('./method'),
-  require('./license')
+  require('./license'),
+  require('./inherit')
 ];
