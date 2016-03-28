@@ -23,5 +23,6 @@ module.exports = [
   require('./function'),
   require('./method'),
   require('./license'),
-  require('./inherit')
+  require('./inherit'),
+  require('./mixin')
 ];
