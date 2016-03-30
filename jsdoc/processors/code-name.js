@@ -63,6 +63,10 @@ module.exports = function codeNameProcessor(log) {
         return null;
       case 'NewExpression':
         return null;
+      case 'UnaryExpression':
+        return node.name;
+      case 'LogicalExpression':
+        return node.name;
       default:
         log.warn('HELP! Unrecognised node type: ' + node.type);
         log.warn(node);
