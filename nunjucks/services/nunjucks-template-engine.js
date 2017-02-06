@@ -12,13 +12,13 @@ module.exports = function templateEngine(templateFinder) {
      * Nunjucks specific options, such as using `{$ $}` for nunjucks interpolation
      * rather than `{{ }}`, which conflicts with AngularJS
      */
-    config: {},
+    config: {autoescape: false},
 
     filters: [],
     tags: [],
 
     getRenderer: function() {
-      var loader = new nunjucks.FileSystemLoader(templateFinder.templateFolders, true);
+      var loader = new nunjucks.FileSystemLoader(templateFinder.templateFolders, {watch: false, noCache: true});
       var engine = new nunjucks.Environment(loader, this.config);
 
       // Configure nunjucks with the custom filters
