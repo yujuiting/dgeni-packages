@@ -1,11 +1,178 @@
 # Changelog
 
+# 0.16.2  16 December 2016
+
+*	refactor(*): remove Q and use native Promise 	d782698d
+
+This fix removes the q and q-io dependencies, since q-io was causing Array.find
+to be shimmed incorrectly.
+
+# 0.16.1  13 December 2016
+
+* fix(base/services): split node-html-encoder require and instantiation over two lines   96cb8139e8876150b5a6ce08f2c5eef7fbd791f6
+
+
+## v0.16.0 13 September 2016
+
+* fix(readTypeScriptModules): don't concatenate multiple declarations		fb22bac5
+
+### BREAKING CHANGES
+
+Previously, if there were multiple declarations for an exported symbol,
+then the docs for those declarations were simply joined together with
+newlines.
+
+Now only the first declaration (or the valueDeclaration if there is one)
+is used in an export doc.
+
+If you needed the content for the other declarations then you can still
+access them via a call like `getContent(doc.additionalDeclarations[i])`.
+
+## v0.15.2 9 September 2016
+
+* feat(typescript/readTypeScriptModules): hide private Typescript members  8a1277de
+
+
+## v0.15.1 6 September 2016
+
+* fix(git): allow for git URLs that start with `git+https:`	c27a324d
+* doc(readme_fr_FR) : update readme in french	 da7f6b3c
+* fix(ngdocs): use `import` syntax for macros		9a69a096
+* fix(nunjucks): explicitly set autoescaping to off		54e20018
+* fix(nunjucks): warnings for upgraded API, add error check		e339b7d8
+* chore(package.json) update nunjucks to 2.4.2	01108e4e
+
+### BREAKING CHANGES
+
+The update to `nunjucks` 2.4.2 has changed how macros are used. Now you must import them rather than
+just including them in a template. See http://mozilla.github.io/nunjucks/templating.html#import for
+more detail on the syntax.
+
+Before:
+
+```
+{% include "lib/macros.html" -%}
+{$ functionSyntax(doc) $}
+```
+
+Now:
+
+```
+{% import "lib/macros.html" as lib -%}
+{$ lib.functionSyntax(doc) $}
+```
+
+The templates provided by this project (in particular those in the `ngdocs` package) have been updated
+but if your project uses macros in its own templates then these will need updating too.
+
+## v0.14.0 4 July 2016
+
+Major update of dependencies to latest.
+
+* chore(package.json): update lodash to 4.13.1	f082551
+* chore(package.json): update lodash to 3.x	a37d110
+* chore(package.json): update q-io to 1.13.2	79819fa
+* chore(package.json): update q to 1.4.1	9bb7490
+* chore(package.json): update semver to 5.2.0	5bfdbba
+* chore(package.json): update shelljs to 0.7.0	5480c55
+* chore(package.json): removed unused packages	1546b8e
+* chore(package.json): update glob to 7.0.5	5208f8a
+* chore(package.json): update change-case to 3.0.0	7fcc9c7
+* chore(package.json): update minimatch to 3.0.2	8f57d2c
+
+
+### BREAKING CHANGES
+
+The `nunjucks` package rendering filter `sentenceCase` now capitalizes
+the first letter of the sentence. If you relied on the previous behaviour
+then you should use the `noCase` filter instead.
+
+
+## v0.13.1 1 July 2016
+
+* fix(typescript/readTypeScriptModules): `getReturnType` should cope with computed initializers	823d3f9e
+* fix(ngdoc/macros): use `type.name` to display the directive parameter types	18193fee
+
+
+## v0.13.0 12 May 2016
+
+* fix(jsdoc/access): refactor access tags and transforms to allow more configuration	70cd0bea
+* fix(typescript/createCompilerHost): fix syntax errors	ae47de91
+* refactor(jsdoc/codename): add service, made matchers pluggable	28dc7919
+* fix(restrict): Change default from 'A' to 'EA'.	e0e6a501
+* fix(jsdoc/extract-tags): don't write properties if tag values are `undefined`	3eade6bc
+
+### BREAKING CHANGES
+
+* Due to 3eade6bc
+  Tags that had a value of `undefined` are no longer written to the document.
+  If you relied upon such falsy values forcing keys onto the doc, then change
+  your tagDefs to return `null` instead.
+* Due to e0e6a501
+  If you don't provide a value for the `@restrict` tag it now defaults to `EA` rather
+  than just `A`. If you want your directives to be only `A` then you must provide a
+  `@restrict` tag for them.
+* Due to 70cd0bea
+  The way that you configure `extractAccessTransform` has changed. If you were creating
+  your own access tags then you must use the new API.
+
+  Previously:
+
+  ```
+  module.exports = function(accessTagTransform) {
+    var name = 'private';
+
+    accessTagTransform.addTag(name);
+    accessTagTransform.addValue(name);
+
+    function getValue () {
+      return name;
+    }
+
+    return {
+      name: name,
+      docProperty: 'access',
+      transforms: [getValue, accessTagTransform]
+    };
+  };
+  ```
+
+  Now:
+
+  ```
+  module.exports = function(extractTypeTransform, extractAccessTransform) {
+    extractAccessTransform.allowedTags.set('private');
+    return {
+      name: 'private',
+      transforms: [extractTypeTransform, extractAccessTransform]
+    };
+  };
+  ```
+
+## v0.12.0 3 April 2016
+
+### Features
+
+* feat(typescript): add package to parse exports from TypeScript modules	3e07adee
+* feat(jsdoc): add support for @access, @private, @protected, @public tags	e87f61f3
+* feat(ngdoc): add knownIssues tag and processing	b590d058
+
+### Fixes
+
+* fix(jsdoc): only declare private tagDef once	04b6e08e
+* fix(git): allow non-github repository URLs	afc213cc
+* fix(examples): don't error if the doc has no content	2944e203
+* fix(ngdoc/api.template): use link filter for module link	4f4ab7ef
+* fix(code-name): add support for MethodDefinition, ArrowFunctionExpression nodes	cf2c28bf
+* fix(git/versionInfo): don't throw error if there is no valid codename	d749314c
+
+
 ## v0.11.1 7 November 2015
 
-* fix(jsdoc/inline-tags): don't conflate successive inline tags when matching Peter Bacon Darwin  67c2abf5
-* feat(jsdoc): add license tag  Peter Bacon Darwin  6f4bb5f7
-* feat(docs): improve templates and add npm script for generating docs  Peter Bacon Darwin  3c75243e
-* feat(dgeni): compute the full pipeline of processors for each package and add index page  Peter Bacon Darwin  c12cd9ec
+* fix(jsdoc/inline-tags): don't conflate successive inline tags when matching  67c2abf5
+* feat(jsdoc): add license tag   6f4bb5f7
+* feat(docs): improve templates and add npm script for generating docs   3c75243e
+* feat(dgeni): compute the full pipeline of processors for each package and add index page   c12cd9ec
 
 
 ## v0.11.0 31 October 2015
